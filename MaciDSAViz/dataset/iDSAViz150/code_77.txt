@@ -1,0 +1,107 @@
+Name:search of SplayTree
+
+Code:
+class Node:
+    def __init__(self, key):
+        self.key = key
+        self.left = None
+        self.right = None
+
+
+class SplayTree:
+    def __init__(self):
+        self.root = None
+
+    def _zig(self, node):
+
+        left = node.left
+        node.left = left.right
+        left.right = node
+        return left
+
+    def _zag(self, node):
+
+        right = node.right
+        node.right = right.left
+        right.left = node
+        return right
+
+    def _splay(self, root, key):
+
+        if root is None or root.key == key:
+            return root
+
+        if key < root.key:
+            if not root.left:
+                return root
+
+            if key < root.left.key:
+                root.left.left = self._splay(root.left.left, key)
+                root = self._zig(root)
+
+            elif key > root.left.key:
+                root.left.right = self._splay(root.left.right, key)
+                if root.left.right:
+                    root.left = self._zag(root.left)
+
+            return self._zig(root) if root.left else root
+
+        else:
+            if not root.right:
+                return root
+
+            if key > root.right.key:
+                root.right.right = self._splay(root.right.right, key)
+                root = self._zag(root)
+
+            elif key < root.right.key:
+                root.right.left = self._splay(root.right.left, key)
+                if root.right.left:
+                    root.right = self._zig(root.right)
+
+            return self._zag(root) if root.right else root
+
+    def search(self, key):
+
+        self.root = self._splay(self.root, key)
+        if self.root and self.root.key == key:
+            print(f"Found key: {key}")
+            return self.root
+        print(f"Key {key} not found.")
+        return None
+
+    def insert(self, key):
+
+        if not self.root:
+            self.root = Node(key)
+            return
+
+        self.root = self._splay(self.root, key)
+
+        if self.root.key == key:
+            print(f"Key {key} already exists.")
+            return
+
+        new_node = Node(key)
+
+        if key < self.root.key:
+            new_node.right = self.root
+            new_node.left = self.root.left
+            self.root.left = None
+        else:
+            new_node.left = self.root
+            new_node.right = self.root.right
+            self.root.right = None
+
+        self.root = new_node
+        print(f"Inserted key: {key}")
+
+
+splay_tree = SplayTree()
+
+splay_tree.insert(10)
+splay_tree.insert(20)
+splay_tree.insert(5)
+splay_tree.insert(8)
+
+splay_tree.search(5)

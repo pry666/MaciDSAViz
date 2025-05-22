@@ -1,0 +1,9 @@
+Name:Loop to output the characters before the first h in the string
+
+Code:
+s = "abcdefdebchadbabdch"
+
+for i in range(len(s)):
+    if s[i] == 'h':
+        break
+    print(s[i])

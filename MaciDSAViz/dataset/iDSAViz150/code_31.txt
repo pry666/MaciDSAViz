@@ -1,0 +1,55 @@
+Name:Strongly connected components of a directed graph
+
+Code:
+from collections import defaultdict
+
+def strongly_connected_components(graph):
+
+    index = 0
+    stack = []
+    indices = {}
+    lowlink = {}
+    on_stack = set()
+    components = []
+
+    def tarjan(node):
+        nonlocal index
+        indices[node] = lowlink[node] = index
+        index += 1
+        stack.append(node)
+        on_stack.add(node)
+
+        for neighbor in graph[node]:
+            if neighbor not in indices:
+                tarjan(neighbor)
+                lowlink[node] = min(lowlink[node], lowlink[neighbor])
+            elif neighbor in on_stack:
+                lowlink[node] = min(lowlink[node], indices[neighbor])
+
+        if lowlink[node] == indices[node]:
+            component = set()
+            while True:
+                w = stack.pop()
+                on_stack.remove(w)
+                component.add(w)
+                if w == node:
+                    break
+            components.append(component)
+
+    for node in graph:
+        if node not in indices:
+            tarjan(node)
+
+    return components
+
+if __name__ == "__main__":
+    graph = {
+        1: [2],
+        2: [3],
+        3: [1],
+        4: [2, 5],
+        5: [6],
+        6: [4]
+    }
+    result = strongly_connected_components(graph)
+    print("Strongly connected components:", result)

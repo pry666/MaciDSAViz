@@ -1,0 +1,26 @@
+Name:DFS
+
+Code:
+def dfs_recursive(graph, start, visited=None):
+
+    if visited is None:
+        visited = set()
+
+    visited.add(start)
+    result = [start]
+
+    for neighbor in graph[start]:
+        if neighbor not in visited:
+            result.extend(dfs_recursive(graph, neighbor, visited))
+
+    return result
+
+if __name__ == "__main__":
+    graph = {
+        1: [2, 3],
+        2: [4],
+        3: [5],
+        4: [],
+        5: []
+    }
+    print("DFS (recursive):", dfs_recursive(graph, 1))

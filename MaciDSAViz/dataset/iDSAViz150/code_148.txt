@@ -1,0 +1,52 @@
+Name:postorder traversal of a binary tree
+
+Code:
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+root = TreeNode(1,
+    left=TreeNode(2,
+        left=TreeNode(4,
+            left=TreeNode(8),
+            right=TreeNode(9)
+        ),
+        right=TreeNode(5,
+            left=TreeNode(10),
+            right=TreeNode(11)
+        )
+    ),
+    right=TreeNode(3,
+        left=TreeNode(6,
+            left=TreeNode(12),
+            right=TreeNode(13)
+        ),
+        right=TreeNode(7,
+            left=TreeNode(14),
+            right=TreeNode(15)
+        )
+    )
+)
+
+def postorder_traversal_iterative_no_reverse(root):
+    stack, result = [], []
+    current = root
+    last_visited = None
+
+    while stack or current:
+        if current:
+            stack.append(current)
+            current = current.left
+        else:
+            peek_node = stack[-1]
+            if peek_node.right and last_visited != peek_node.right:
+                current = peek_node.right
+            else:
+                result.append(peek_node.val)
+                last_visited = stack.pop()
+    return result
+
+print("\n后序遍历（不使用反转）:")
+print(postorder_traversal_iterative_no_reverse(root))

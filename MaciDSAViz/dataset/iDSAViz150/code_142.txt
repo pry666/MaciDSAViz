@@ -1,0 +1,13 @@
+Name:Count the number of times a character appears in a string
+
+Code:
+def count_char_occurrences(string, char):
+    count = 0
+    for c in string:
+        if c == char:
+            count += 1
+    return count
+
+string = "hello world"
+char = "o"
+print(f"字符 '{char}' 在字符串中出现的次数: {count_char_occurrences(string, char)}")

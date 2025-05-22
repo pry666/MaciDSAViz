@@ -1,0 +1,10 @@
+﻿Name:Find the longest common subsequence
+
+Code:
+def LCS(S1, S2, x, y):
+	if ((x == -1) or (y == -1)):
+		return 0
+	else if (S1[x] == S2[y]):
+		return 1 + LCS(S1, S2, x-1, y-1)
+	else:
+		return max(LCS(S1, S2, x-1, y) , LCS(S1, S2, x, y-1))

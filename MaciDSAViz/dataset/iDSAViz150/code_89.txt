@@ -1,0 +1,64 @@
+Name:search of Prefix Tree
+
+Code:
+class TrieNode:
+
+    def __init__(self):
+        self.children = {}
+        self.is_end_of_word = False
+
+
+class Trie:
+
+    def __init__(self):
+        self.root = TrieNode()
+
+    def insert(self, word):
+
+        current = self.root
+        for char in word:
+            if char not in current.children:
+                current.children[char] = TrieNode()
+            current = current.children[char]
+        current.is_end_of_word = True
+
+    def search(self, word):
+
+        current = self.root
+        for char in word:
+            if char not in current.children:
+                return False
+            current = current.children[char]
+        return current.is_end_of_word
+
+
+    def delete(self, word):
+
+        def _delete(node, word, index):
+            if index == len(word):
+                if not node.is_end_of_word:
+                    return False
+                node.is_end_of_word = False
+                return len(node.children) == 0
+            char = word[index]
+            if char not in node.children:
+                return False
+            can_delete_child = _delete(node.children[char], word, index + 1)
+            if can_delete_child:
+                del node.children[char]
+                return len(node.children) == 0 and not node.is_end_of_word
+            return False
+
+        _delete(self.root, word, 0)
+
+
+
+trie = Trie()
+
+trie.insert("apple")
+trie.insert("app")
+trie.insert("banana")
+
+print(trie.search("apple"))
+print(trie.search("app"))
+print(trie.search("appl"))

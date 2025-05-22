@@ -1,0 +1,84 @@
+Name:search of BTree
+
+Code:
+class BTreeNode:
+
+    def __init__(self, t, leaf=False):
+        self.t = t
+        self.leaf = leaf
+        self.keys = []
+        self.children = []
+
+class BTree:
+
+    def __init__(self, t):
+        self.t = t
+        self.root = BTreeNode(t, leaf=True)
+
+    def insert(self, key):
+
+        root = self.root
+        if len(root.keys) == (2 * self.t) - 1:
+            new_node = BTreeNode(self.t, leaf=False)
+            new_node.children.append(self.root)
+            self.split(new_node, 0)
+            self.root = new_node
+        self._insert_non_full(self.root, key)
+
+    def _insert_non_full(self, node, key):
+
+        if node.leaf:
+            i = len(node.keys) - 1
+            while i >= 0 and key < node.keys[i]:
+                i -= 1
+            node.keys.insert(i + 1, key)
+        else:
+            i = len(node.keys) - 1
+            while i >= 0 and key < node.keys[i]:
+                i -= 1
+            i += 1
+            if len(node.children[i].keys) == (2 * self.t) - 1:
+                self.split(node, i)
+                if key > node.keys[i]:
+                    i += 1
+            self._insert_non_full(node.children[i], key)
+
+    def split(self, parent, index):
+
+        node = parent.children[index]
+        new_node = BTreeNode(self.t, leaf=node.leaf)
+
+        parent.keys.insert(index, node.keys[self.t - 1])
+        parent.children.insert(index + 1, new_node)
+
+        new_node.keys = node.keys[self.t:]
+        node.keys = node.keys[:self.t - 1]
+
+        if not node.leaf:
+            new_node.children = node.children[self.t:]
+            node.children = node.children[:self.t]
+
+    def search(self, key):
+
+        return self._search(self.root, key)
+
+    def _search(self, node, key):
+
+        i = 0
+        while i < len(node.keys) and key > node.keys[i]:
+            i += 1
+        if i < len(node.keys) and key == node.keys[i]:
+            return node
+        if node.leaf:
+            return None
+        return self._search(node.children[i], key)
+
+
+if __name__ == "__main__":
+    btree = BTree(t=3)
+
+    for key in [10, 20, 5, 6, 12, 30, 7, 17]:
+        btree.insert(key)
+
+    print("查找键 6:", "找到" if btree.search(6) else "未找到")
+    print("查找键 15:", "找到" if btree.search(15) else "未找到")

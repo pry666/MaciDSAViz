@@ -1,0 +1,53 @@
+Name:Topological sorting based on in-degree
+
+Code:
+from collections import defaultdict, deque
+
+class Graph:
+    def __init__(self, vertices):
+
+        self.graph = defaultdict(list)
+        self.vertices = vertices
+
+    def add_edge(self, u, v):
+
+        self.graph[u].append(v)
+
+    def topo_sort(self):
+
+        indegree = [0] * self.vertices
+        for u in self.graph:
+            for v in self.graph[u]:
+                indegree[v] += 1
+
+        queue = deque([i for i in range(self.vertices) if indegree[i] == 0])
+        topo_order = []
+
+        while queue:
+            current = queue.popleft()
+            topo_order.append(current)
+
+            for neighbor in self.graph[current]:
+                indegree[neighbor] -= 1
+                if indegree[neighbor] == 0:
+                    queue.append(neighbor)
+
+        if len(topo_order) != self.vertices:
+            print("Graph has a cycle! Topological sorting is not possible.")
+            return []
+
+        return topo_order
+
+
+g = Graph(6)
+
+g.add_edge(5, 2)
+g.add_edge(5, 0)
+g.add_edge(4, 0)
+g.add_edge(4, 1)
+g.add_edge(2, 3)
+g.add_edge(3, 1)
+
+result = g.topo_sort()
+if result:
+    print("Topological Sort:", result)

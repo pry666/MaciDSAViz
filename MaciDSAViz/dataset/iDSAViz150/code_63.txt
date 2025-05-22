@@ -1,0 +1,17 @@
+﻿Name:Calculate a to the power of n
+
+Code:
+def power(a, n):
+    if n == 0:
+        return 1
+    factor = power(a, n // 2)
+
+    if n % 2 == 0:
+        return factor * factor
+    else:
+        return factor * factor * a
+
+a = int(input("请输入底数 a："))
+n = int(input("请输入指数 n："))
+result = power(a, n)
+print(f"{a} 的 {n} 次方是：{result}")

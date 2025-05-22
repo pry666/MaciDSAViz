@@ -1,0 +1,63 @@
+Name:kruskal
+
+Code:
+class DisjointSet:
+
+    def __init__(self, n):
+        self.parent = list(range(n))
+        self.rank = [0] * n
+
+    def find(self, x):
+
+        if self.parent[x] != x:
+            self.parent[x] = self.find(self.parent[x])
+        return self.parent[x]
+
+    def union(self, x, y):
+
+        root_x = self.find(x)
+        root_y = self.find(y)
+
+        if root_x != root_y:
+            if self.rank[root_x] > self.rank[root_y]:
+                self.parent[root_y] = root_x
+            elif self.rank[root_x] < self.rank[root_y]:
+                self.parent[root_x] = root_y
+            else:
+                self.parent[root_y] = root_x
+                self.rank[root_x] += 1
+
+
+def kruskal(num_vertices, edges):
+
+    edges.sort(key=lambda edge: edge[0])
+
+    disjoint_set = DisjointSet(num_vertices)
+
+    mst_weight = 0
+    mst_edges = []
+
+    for weight, u, v in edges:
+        if disjoint_set.find(u) != disjoint_set.find(v):
+            disjoint_set.union(u, v)
+            mst_weight += weight
+            mst_edges.append((u, v, weight))
+
+    return mst_weight, mst_edges
+
+
+if __name__ == "__main__":
+    num_vertices = 4
+    edges = [
+        (1, 0, 1),
+        (4, 0, 2),
+        (3, 0, 3),
+        (2, 1, 2),
+        (5, 2, 3)
+    ]
+
+    mst_weight, mst_edges = kruskal(num_vertices, edges)
+    print("最小生成树的权重:", mst_weight)
+    print("最小生成树的边:")
+    for u, v, weight in mst_edges:
+        print(f"{u} -- {v} [权重: {weight}]")

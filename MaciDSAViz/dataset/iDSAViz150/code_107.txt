@@ -1,0 +1,8 @@
+Name:find maxval
+
+Code:
+maxval = x1
+if x2 > maxval:
+   maxval = x2
+if x3 > maxval:
+   maxval = x3

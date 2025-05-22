@@ -1,0 +1,76 @@
+Name:delete of BinarySearchTree
+
+Code:
+class TreeNode:
+
+    def __init__(self, key):
+        self.key = key
+        self.left = None
+        self.right = None
+
+
+class BinarySearchTree:
+
+    def __init__(self):
+        self.root = None
+
+    def insert(self, key):
+
+        if not self.root:
+            self.root = TreeNode(key)
+        else:
+            self._insert(self.root, key)
+
+    def _insert(self, node, key):
+
+        if key < node.key:
+            if node.left:
+                self._insert(node.left, key)
+            else:
+                node.left = TreeNode(key)
+        elif key > node.key:
+            if node.right:
+                self._insert(node.right, key)
+            else:
+                node.right = TreeNode(key)
+
+    def delete(self, key):
+
+        self.root = self._delete(self.root, key)
+
+    def _delete(self, node, key):
+
+        if not node:
+            return node
+
+        if key < node.key:
+            node.left = self._delete(node.left, key)
+        elif key > node.key:
+            node.right = self._delete(node.right, key)
+        else:
+            if not node.left:
+                return node.right
+            elif not node.right:
+                return node.left
+            else:
+                min_node = self._find_min(node.right)
+                node.key = min_node.key
+                node.right = self._delete(node.right, min_node.key)
+
+        return node
+
+    def _find_min(self, node):
+
+        while node.left:
+            node = node.left
+        return node
+
+
+
+if __name__ == "__main__":
+    bst = BinarySearchTree()
+
+    for key in [50, 30, 70, 20, 40, 60, 80]:
+        bst.insert(key)
+
+    bst.delete(20)

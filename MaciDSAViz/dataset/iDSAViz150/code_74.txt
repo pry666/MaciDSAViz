@@ -1,0 +1,73 @@
+﻿Name:SkewHeap
+
+Code:
+class Node:
+    def __init__(self, key):
+        self.key = key
+        self.left = None
+        self.right = None
+
+
+class SkewHeap:
+    def __init__(self):
+        self.root = None
+
+    def merge(self, h1, h2):
+
+        if not h1:
+            return h2
+        if not h2:
+            return h1
+
+        if h1.key > h2.key:
+            h1, h2 = h2, h1
+
+        h1.left, h1.right = h1.right, h1.left
+        h1.left = self.merge(h1.left, h2)
+
+        return h1
+
+    def insert(self, key):
+
+        new_node = Node(key)
+        self.root = self.merge(self.root, new_node)
+
+    def delete_min(self):
+
+        if not self.root:
+            print("Heap is empty!")
+            return None
+
+        min_key = self.root.key
+        self.root = self.merge(self.root.left, self.root.right)
+        return min_key
+
+    def is_empty(self):
+
+        return self.root is None
+
+    def display(self, node=None, level=0):
+
+        if node is None:
+            node = self.root
+
+        if node:
+            self.display(node.right, level + 1)
+            print(" " * 4 * level + f"-> {node.key}")
+            self.display(node.left, level + 1)
+
+
+skew_heap = SkewHeap()
+
+skew_heap.insert(10)
+skew_heap.insert(20)
+skew_heap.insert(5)
+skew_heap.insert(30)
+
+print("Heap structure:")
+skew_heap.display()
+
+print("\nDelete minimum:", skew_heap.delete_min())
+
+print("\nHeap structure after deleting minimum:")
+skew_heap.display()

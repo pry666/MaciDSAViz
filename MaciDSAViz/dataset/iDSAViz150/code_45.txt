@@ -1,0 +1,9 @@
+Name:judge the number if is more than 5
+
+Code:
+x = int(input("请输入一个数字："))
+
+if x > 5:
+    print("x 大于 5")
+else:
+    print("x 不大于 5")

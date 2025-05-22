@@ -1,0 +1,15 @@
+Name:Traversing a two-dimensional array column by row
+
+Code:
+matrix = [
+    [1, 2, 3],
+    [4, 5, 6],
+    [7, 8, 9]
+]
+
+num_rows = len(matrix)
+
+for row in array:
+    for element in row:
+        print(element, end=" ")
+    print()

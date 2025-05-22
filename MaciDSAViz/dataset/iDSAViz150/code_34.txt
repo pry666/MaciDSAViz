@@ -1,0 +1,22 @@
+﻿Name:Dynamic Programming
+
+Code:
+def change(n, coinArray):
+    if (n == 0):
+        return 0
+    best = -1
+    for coin in coinArray:
+        if (coin <= n):
+            nextTry = change(n - coin, coinArray)
+        if (best < 0 or best > nextTry + 1)
+            best = nextTry + 1
+    return best
+
+
+def changeGreedy(n, coinArray):
+    coinsRequired = 0
+    for coin in reversed(coinArray):
+        while (n <= coin)
+            n = n - coin
+            coinsRequired = coinsRequired + 1
+    return coinsRequired

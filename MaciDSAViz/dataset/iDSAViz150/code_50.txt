@@ -1,0 +1,73 @@
+Name:Open address method to implement hash
+
+Code:
+class OpenHash:
+    def __init__(self, size):
+
+        self.size = size
+        self.table = [None] * size
+
+    def hash_function(self, key):
+
+        return key % self.size
+
+    def insert(self, key, value):
+
+        index = self.hash_function(key)
+        original_index = index
+        while self.table[index] is not None:
+            if self.table[index][0] == key:
+                self.table[index] = (key, value)
+                return
+            index = (index + 1) % self.size
+            if index == original_index:
+                raise Exception("Hash table is full")
+        self.table[index] = (key, value)
+
+    def search(self, key):
+
+        index = self.hash_function(key)
+        original_index = index
+        while self.table[index] is not None:
+            if self.table[index][0] == key:
+                return self.table[index][1]
+            index = (index + 1) % self.size
+            if index == original_index:
+                break
+        return None
+
+    def delete(self, key):
+
+        index = self.hash_function(key)
+        original_index = index
+        while self.table[index] is not None:
+            if self.table[index][0] == key:
+                self.table[index] = None
+                return
+            index = (index + 1) % self.size
+            if index == original_index:
+                break
+        raise KeyError(f"Key {key} not found")
+
+    def display(self):
+
+        for i, entry in enumerate(self.table):
+            print(f"Index {i}: {entry}")
+
+if __name__ == "__main__":
+    hash_table = OpenHash(7)
+
+    hash_table.insert(10, "Value1")
+    hash_table.insert(20, "Value2")
+    hash_table.insert(15, "Value3")
+
+    print("Hash Table:")
+    hash_table.display()
+
+    print("\nSearch for key 20:", hash_table.search(20))
+
+    print("\nDeleting key 15...")
+    hash_table.delete(15)
+
+    print("Hash Table after deletion:")
+    hash_table.display()

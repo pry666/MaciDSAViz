@@ -1,0 +1,39 @@
+﻿Name:Rotation and translation of two-dimensional matrices
+
+Code:
+import numpy as np
+
+def rotate_and_translate(matrix, angle_degrees, translate_x, translate_y):
+
+    angle_radians = np.radians(angle_degrees)
+
+    rotation_matrix = np.array([
+        [np.cos(angle_radians), -np.sin(angle_radians)],
+        [np.sin(angle_radians),  np.cos(angle_radians)]
+    ])
+
+    rotated_matrix = np.dot(matrix, rotation_matrix.T)
+
+    translated_matrix = rotated_matrix + np.array([translate_x, translate_y])
+
+    return translated_matrix
+
+if __name__ == "__main__":
+    original_matrix = np.array([
+        [1, 1],
+        [2, 1],
+        [2, 2],
+        [1, 2]
+    ])
+
+    angle = 45
+    translate_x = 3
+    translate_y = -1
+
+    result_matrix = rotate_and_translate(original_matrix, angle, translate_x, translate_y)
+
+    print("原始矩阵：")
+    print(original_matrix)
+
+    print("旋转和平移后的矩阵：")
+    print(result_matrix)

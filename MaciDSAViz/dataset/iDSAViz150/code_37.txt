@@ -1,0 +1,14 @@
+﻿Name:Matrix Multiplication
+
+Code:
+def MatrixMultiply(x, y, P):
+	if (x >= y):
+		return 0
+	best = -1
+	for i in range(x, y):
+		left = MatrixMultiply(x, i, P)
+		right = MatrixMultiply(i+1, y, P)
+		total = left + right + P[x] * P[i+1] * P[y]
+		if (best == -1 or best > total):
+			best = total
+	return best

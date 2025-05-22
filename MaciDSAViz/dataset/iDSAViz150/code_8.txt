@@ -1,0 +1,128 @@
+Name:delete of insert tree
+
+Code:
+class BPlusTreeNode:
+
+    def __init__(self, is_leaf=False):
+        self.is_leaf = is_leaf
+        self.keys = []
+        self.children = []
+
+
+class BPlusTree:
+
+    def __init__(self, t):
+        self.t = t
+        self.root = BPlusTreeNode(is_leaf=True)
+
+    def insert(self, key):
+
+        root = self.root
+        if len(root.keys) == (2 * self.t) - 1:
+            new_root = BPlusTreeNode()
+            new_root.children.append(self.root)
+            self.split_child(new_root, 0)
+            self.root = new_root
+        self._insert_non_full(self.root, key)
+
+    def _insert_non_full(self, node, key):
+
+        if node.is_leaf:
+            i = 0
+            while i < len(node.keys) and key > node.keys[i]:
+                i += 1
+            node.keys.insert(i, key)
+        else:
+            i = 0
+            while i < len(node.keys) and key > node.keys[i]:
+                i += 1
+            if len(node.children[i].keys) == (2 * self.t) - 1:
+                self.split_child(node, i)
+                if key > node.keys[i]:
+                    i += 1
+            self._insert_non_full(node.children[i], key)
+
+    def split_child(self, parent, index):
+
+        t = self.t
+        node = parent.children[index]
+        new_node = BPlusTreeNode(is_leaf=node.is_leaf)
+
+        parent.keys.insert(index, node.keys[t - 1])
+        parent.children.insert(index + 1, new_node)
+        new_node.keys = node.keys[t:]
+        node.keys = node.keys[:t - 1]
+
+        if not node.is_leaf:
+            new_node.children = node.children[t:]
+            node.children = node.children[:t]
+
+    def delete(self, key):
+        self._delete(self.root, key)
+        if not self.root.is_leaf and len(self.root.keys) == 0:
+            self.root = self.root.children[0]
+
+    def _delete(self, node, key):
+        if node.is_leaf:
+            if key in node.keys:
+                node.keys.remove(key)
+        else:
+            i = 0
+            while i < len(node.keys) and key >= node.keys[i]:
+                i += 1
+            self._delete(node.children[i], key)
+            if len(node.children[i].keys) < self.t - 1:
+                self._fix_child(node, i)
+
+    def _fix_child(self, parent, idx):
+        child = parent.children[idx]
+        if idx > 0:
+            left_sibling = parent.children[idx - 1]
+            if len(left_sibling.keys) >= self.t:
+                if child.is_leaf:
+                    child.keys.insert(0, left_sibling.keys.pop())
+                    parent.keys[idx - 1] = child.keys[0]
+                else:
+                    child.keys.insert(0, parent.keys[idx - 1])
+                    parent.keys[idx - 1] = left_sibling.keys.pop()
+                    child.children.insert(0, left_sibling.children.pop())
+                return
+        if idx < len(parent.children) - 1:
+            right_sibling = parent.children[idx + 1]
+            if len(right_sibling.keys) >= self.t:
+                if child.is_leaf:
+                    child.keys.append(right_sibling.keys.pop(0))
+                    parent.keys[idx] = right_sibling.keys[0]
+                else:
+                    child.keys.append(parent.keys[idx])
+                    parent.keys[idx] = right_sibling.keys.pop(0)
+                    child.children.append(right_sibling.children.pop(0))
+                return
+        if idx > 0:
+            self._merge_nodes(parent, idx - 1)
+        else:
+            self._merge_nodes(parent, idx)
+
+    def _merge_nodes(self, parent, idx):
+        child1 = parent.children[idx]
+        child2 = parent.children[idx + 1]
+        if not child1.is_leaf:
+            child1.keys.append(parent.keys[idx])
+        child1.keys.extend(child2.keys)
+        if not child1.is_leaf:
+            child1.children.extend(child2.children)
+        else:
+            child1.next = child2.next
+        parent.keys.pop(idx)
+        parent.children.pop(idx + 1)
+
+
+
+if __name__ == "__main__":
+    bpt = BPlusTree(t=3)
+
+    for key in [10, 20, 5, 6, 12, 30, 7, 17]:
+        bpt.insert(key)
+
+    for key in [6, 12, 30]:
+        bpt.delete(key)

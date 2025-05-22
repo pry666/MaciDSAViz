@@ -1,0 +1,10 @@
+Name: 1-D array traverse
+
+Code:
+SIZE = 10
+array = []
+for i in range(SIZE):
+    array.append((i - SIZE/2 + 4) * (i - SIZE/2 - 6) + 3)
+
+for element in array:
+    print(element)

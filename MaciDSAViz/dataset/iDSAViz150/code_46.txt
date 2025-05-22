@@ -1,0 +1,15 @@
+Name:determine grade by "If"
+
+Code:
+score = int(input("请输入分数："))
+
+if score < 60:
+    grade = 'D'
+elif score < 75:
+    grade = 'C'
+elif score < 90:
+    grade = 'B'
+else:
+    grade = 'A'
+
+print("等级为：", grade)

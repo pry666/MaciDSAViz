@@ -1,0 +1,26 @@
+﻿Name:N-Queens
+
+Code:
+def calcQueens(size):
+	board = [-1] * size
+	return  queens(board, 0, size)
+
+def queens(board, current, size):
+	if(current == size):
+		return true
+	else:
+		for i in range(size):
+			board[current] = i
+			if noConflicts(board, current):
+			    done = queens(board, current + 1, size)
+		if (done):
+			return true
+		return false
+
+def noConflicts(board, current):
+	for i in range(current):
+		if (board[i] == board[current]):
+			return false
+		if (current - i == abs(board[current] = board[i])):
+			return false
+	return true

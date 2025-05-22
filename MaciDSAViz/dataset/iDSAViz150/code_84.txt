@@ -1,0 +1,60 @@
+Name:traverse of TernarySearchTree
+
+Code:
+class TSTNode:
+
+    def __init__(self, char):
+        self.char = char
+        self.left = None
+        self.eq = None
+        self.right = None
+        self.is_end = False
+
+
+class TernarySearchTree:
+    def __init__(self):
+        self.root = None
+
+    def insert(self, word):
+        if word:
+            self.root = self._insert(self.root, word, 0)
+
+    def _insert(self, node, word, index):
+        char = word[index]
+        if not node:
+            node = TSTNode(char)
+        if char < node.char:
+            node.left = self._insert(node.left, word, index)
+        elif char > node.char:
+            node.right = self._insert(node.right, word, index)
+        else:
+            if index + 1 < len(word):
+                node.eq = self._insert(node.eq, word, index + 1)
+            else:
+                node.is_end = True
+        return node
+
+    def traverse(self):
+        words = []
+        self._traverse(self.root, "", words)
+        return words
+
+    def _traverse(self, node, prefix, words):
+        if not node:
+            return
+        self._traverse(node.left, prefix, words)
+        new_prefix = prefix + node.char
+        if node.is_end:
+            words.append(new_prefix)
+        self._traverse(node.eq, new_prefix, words)
+        self._traverse(node.right, prefix, words)
+
+
+if __name__ == "__main__":
+    tst = TernarySearchTree()
+
+    for word in ["cat", "cats", "cap", "bat", "bar", "bark"]:
+        tst.insert(word)
+
+    print("TST 中的所有单词：")
+    print(tst.traverse())

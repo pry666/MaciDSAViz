@@ -1,0 +1,64 @@
+﻿Name:Coordinate transformation between 3D hand space and world space
+
+Code:
+import numpy as np
+
+def translation_matrix(tx, ty, tz):
+    return np.array([[1, 0, 0, tx],
+                     [0, 1, 0, ty],
+                     [0, 0, 1, tz],
+                     [0, 0, 0, 1]])
+
+def rotation_matrix_x(theta):
+    theta = np.deg2rad(theta)
+    return np.array([[1, 0, 0, 0],
+                     [0, np.cos(theta), -np.sin(theta), 0],
+                     [0, np.sin(theta), np.cos(theta), 0],
+                     [0, 0, 0, 1]])
+
+def rotation_matrix_y(theta):
+    theta = np.deg2rad(theta)
+    return np.array([[np.cos(theta), 0, np.sin(theta), 0],
+                     [0, 1, 0, 0],
+                     [-np.sin(theta), 0, np.cos(theta), 0],
+                     [0, 0, 0, 1]])
+
+def rotation_matrix_z(theta):
+    theta = np.deg2rad(theta)
+    return np.array([[np.cos(theta), -np.sin(theta), 0, 0],
+                     [np.sin(theta), np.cos(theta), 0, 0],
+                     [0, 0, 1, 0],
+                     [0, 0, 0, 1]])
+
+def scale_matrix(sx, sy, sz):
+    return np.array([[sx, 0, 0, 0],
+                     [0, sy, 0, 0],
+                     [0, 0, sz, 0],
+                     [0, 0, 0, 1]])
+
+def transform_to_world_space(hand_space_coords, translation, rotation, scale):
+    T = translation_matrix(*translation)
+    Rx = rotation_matrix_x(rotation[0])
+    Ry = rotation_matrix_y(rotation[1])
+    Rz = rotation_matrix_z(rotation[2])
+    S = scale_matrix(*scale)
+
+    transformation_matrix = np.dot(T, np.dot(Rz, np.dot(Ry, np.dot(Rx, S))))
+
+    hand_space_coords_homogeneous = np.append(hand_space_coords, 1)
+
+    world_space_coords = np.dot(transformation_matrix, hand_space_coords_homogeneous)
+
+    return world_space_coords[:3]
+
+if __name__ == "__main__":
+    hand_space_point = np.array([2, 3, 4])
+
+    translation = (1, 2, 3)
+
+    rotation = (30, 45, 60)
+
+    scale = (1, 2, 1)
+
+    world_space_point = transform_to_world_space(hand_space_point, translation, rotation, scale)
+    print("从手部空间到世界空间的变换:", world_space_point)

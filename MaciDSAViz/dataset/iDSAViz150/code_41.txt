@@ -1,0 +1,168 @@
+﻿Name:Fibonacci Heap
+
+Code:
+import math
+
+class Node:
+    def __init__(self, key):
+        self.key = key
+        self.degree = 0
+        self.mark = False
+        self.parent = None
+        self.child = None
+        self.prev = self
+        self.next = self
+
+
+class FibonacciHeap:
+    def __init__(self):
+        self.min = None
+        self.root_list = None
+        self.total_nodes = 0
+
+    def insert(self, key):
+        node = Node(key)
+        if not self.root_list:
+            self.root_list = node
+        else:
+            self._merge_into_root_list(node)
+
+        if not self.min or node.key < self.min.key:
+            self.min = node
+
+        self.total_nodes += 1
+        return node
+
+    def find_min(self):
+        if not self.min:
+            return None
+        return self.min.key
+
+    def union(self, other):
+        if not other.root_list:
+            return
+        if not self.root_list:
+            self.root_list = other.root_list
+            self.min = other.min
+        else:
+            self._merge_into_root_list(other.root_list)
+            if other.min and other.min.key < self.min.key:
+                self.min = other.min
+
+        self.total_nodes += other.total_nodes
+
+    def extract_min(self):
+        z = self.min
+        if z:
+            if z.child:
+                children = [x for x in self._iterate(z.child)]
+                for child in children:
+                    self._merge_into_root_list(child)
+                    child.parent = None
+
+            self._remove_from_root_list(z)
+            if z == z.next:
+                self.min = None
+                self.root_list = None
+            else:
+                self.min = z.next
+                self._consolidate()
+            self.total_nodes -= 1
+        return z.key if z else None
+
+    def decrease_key(self, node, new_key):
+        if new_key > node.key:
+            raise ValueError("New key is greater than current key")
+        node.key = new_key
+        parent = node.parent
+        if parent and node.key < parent.key:
+            self._cut(node, parent)
+            self._cascading_cut(parent)
+
+        if node.key < self.min.key:
+            self.min = node
+
+    def delete(self, node):
+        self.decrease_key(node, float("-inf"))
+        self.extract_min()
+
+    def _merge_into_root_list(self, node):
+        if not self.root_list:
+            self.root_list = node
+        else:
+            node.prev = self.root_list
+            node.next = self.root_list.next
+            self.root_list.next.prev = node
+            self.root_list.next = node
+
+    def _remove_from_root_list(self, node):
+        if node == node.next:
+            self.root_list = None
+        else:
+            node.prev.next = node.next
+            node.next.prev = node.prev
+            if self.root_list == node:
+                self.root_list = node.next
+
+    def _consolidate(self):
+        A = [None] * int(math.log2(self.total_nodes) + 1)
+        roots = [x for x in self._iterate(self.root_list)]
+        for w in roots:
+            x = w
+            d = x.degree
+            while A[d]:
+                y = A[d]
+                if x.key > y.key:
+                    x, y = y, x
+                self._link(y, x)
+                A[d] = None
+                d += 1
+            A[d] = x
+
+        self.min = None
+        for i in range(len(A)):
+            if A[i]:
+                if not self.min or A[i].key < self.min.key:
+                    self.min = A[i]
+
+    def _link(self, y, x):
+        self._remove_from_root_list(y)
+        y.parent = x
+        y.next = y
+        y.prev = y
+        if not x.child:
+            x.child = y
+        else:
+            self._merge_into_root_list(y)
+        x.degree += 1
+        y.mark = False
+
+    def _cut(self, x, y):
+        if y.child == x:
+            if x.next == x:
+                y.child = None
+            else:
+                y.child = x.next
+        self._remove_from_root_list(x)
+        self._merge_into_root_list(x)
+        x.parent = None
+        x.mark = False
+
+    def _cascading_cut(self, y):
+        z = y.parent
+        if z:
+            if not y.mark:
+                y.mark = True
+            else:
+                self._cut(y, z)
+                self._cascading_cut(z)
+
+    def _iterate(self, start):
+        node = start
+        flag = False
+        while True:
+            if node == start and flag:
+                break
+            flag = True
+            yield node
+            node = node.next

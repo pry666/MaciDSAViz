@@ -1,0 +1,81 @@
+Name:closed hash
+
+Code:
+class ClosedHashTable:
+    def __init__(self, size):
+        self.size = size
+        self.table = [None] * size
+        self.deleted = object()
+
+    def hash_function(self, key):
+
+        return key % self.size
+
+    def insert(self, key, value):
+
+        index = self.hash_function(key)
+        original_index = index
+
+        while self.table[index] not in (None, self.deleted):
+            if self.table[index][0] == key:
+                self.table[index] = (key, value)
+                return
+            index = (index + 1) % self.size
+            if index == original_index:
+                raise Exception("Hash Table is full")
+
+        self.table[index] = (key, value)
+
+    def search(self, key):
+
+        index = self.hash_function(key)
+        original_index = index
+
+        while self.table[index] is not None:
+            if self.table[index] is not self.deleted and self.table[index][0] == key:
+                return self.table[index][1]
+            index = (index + 1) % self.size
+            if index == original_index:
+                break
+        return None
+
+    def delete(self, key):
+
+        index = self.hash_function(key)
+        original_index = index
+
+        while self.table[index] is not None:
+            if self.table[index] is not self.deleted and self.table[index][0] == key:
+                self.table[index] = self.deleted
+                return True
+            index = (index + 1) % self.size
+            if index == original_index:
+                break
+        return False
+
+    def display(self):
+
+        for i, item in enumerate(self.table):
+            if item is None:
+                print(f"Index {i}: None")
+            elif item is self.deleted:
+                print(f"Index {i}: Deleted")
+            else:
+                print(f"Index {i}: Key = {item[0]}, Value = {item[1]}")
+
+if __name__ == "__main__":
+    hash_table = ClosedHashTable(7)
+
+    hash_table.insert(1, "one")
+    hash_table.insert(2, "two")
+    hash_table.insert(3, "three")
+    hash_table.insert(8, "eight")
+
+    print("Search for key 2:", hash_table.search(2))
+    print("Search for key 3:", hash_table.search(3))
+    print("Search for key 10:", hash_table.search(10))
+
+    print("Delete key 3:", hash_table.delete(3))
+    print("Delete key 10:", hash_table.delete(10))
+
+    hash_table.display()

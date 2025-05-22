@@ -1,0 +1,68 @@
+﻿Name:Implementing a stack with linked list
+
+Code:
+class Node:
+
+    def __init__(self, data):
+        self.data = data
+        self.next = None
+
+
+class StackLinkedList:
+
+    def __init__(self):
+        self.top = None
+
+    def push(self, value):
+
+        new_node = Node(value)
+        new_node.next = self.top
+        self.top = new_node
+        print(f"Pushed {value} to the stack.")
+
+    def pop(self):
+
+        if self.is_empty():
+            print("Stack Underflow! Cannot pop.")
+            return None
+        value = self.top.data
+        self.top = self.top.next
+        print(f"Popped {value} from the stack.")
+        return value
+
+    def is_empty(self):
+
+        return self.top is None
+
+    def peek(self):
+
+        if self.is_empty():
+            print("Stack is empty!")
+            return None
+        return self.top.data
+
+    def display(self):
+
+        print("Stack contents:", end=" ")
+        current = self.top
+        while current:
+            print(current.data, end=" -> ")
+            current = current.next
+        print("None")
+
+
+stack = StackLinkedList()
+
+stack.push(10)
+stack.push(20)
+stack.push(30)
+stack.display()
+
+stack.pop()
+stack.display()
+
+print("Top element:", stack.peek())
+
+stack.pop()
+stack.pop()
+stack.pop()

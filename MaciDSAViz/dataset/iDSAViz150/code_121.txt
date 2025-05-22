@@ -1,0 +1,9 @@
+Name:Loop to count the characters in the string that do not contain h
+
+Code:
+s = "abcdefdebchadbabdch"
+
+for i in range(len(s)):
+    if s[i] == 'h':
+        continue
+    print(s[i])

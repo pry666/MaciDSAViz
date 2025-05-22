@@ -1,0 +1,49 @@
+Name:stack
+
+Code:
+class Stack:
+    def __init__(self):
+        self.stack = []
+
+    def push(self, value):
+
+        self.stack.append(value)
+        print(f"Pushed {value} to the stack.")
+
+    def pop(self):
+
+        if not self.is_empty():
+            value = self.stack.pop()
+            print(f"Popped {value} from the stack.")
+            return value
+        else:
+            print("Stack is empty! Cannot pop.")
+            return None
+
+    def is_empty(self):
+
+        return len(self.stack) == 0
+
+    def peek(self):
+
+        if not self.is_empty():
+            return self.stack[-1]
+        else:
+            print("Stack is empty!")
+            return None
+
+    def display(self):
+
+        print("Stack contents:", self.stack)
+
+
+stack = Stack()
+stack.push(10)
+stack.push(20)
+stack.push(30)
+stack.display()
+stack.pop()
+stack.display()
+stack.pop()
+stack.pop()
+stack.pop()

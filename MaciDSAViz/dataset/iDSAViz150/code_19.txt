@@ -1,0 +1,152 @@
+﻿Name:BinomialQueue
+
+Code:
+class BinomialNode:
+
+    def __init__(self, key):
+        self.key = key
+        self.parent = None
+        self.child = None
+        self.sibling = None
+        self.degree = 0
+
+
+class BinomialQueue:
+
+    def __init__(self):
+        self.head = None
+
+    def merge(self, h1, h2):
+
+        if not h1:
+            return h2
+        if not h2:
+            return h1
+
+        if h1.degree <= h2.degree:
+            h1.sibling = self.merge(h1.sibling, h2)
+            return h1
+        else:
+            h2.sibling = self.merge(h1, h2.sibling)
+            return h2
+
+    def union(self, other):
+
+        self.head = self.merge(self.head, other.head)
+        if not self.head:
+            return
+
+        prev = None
+        curr = self.head
+        next = curr.sibling
+
+        while next:
+            if curr.degree != next.degree or (next.sibling and next.sibling.degree == curr.degree):
+                prev = curr
+                curr = next
+            else:
+                if curr.key <= next.key:
+                    curr.sibling = next.sibling
+                    self.link(next, curr)
+                else:
+                    if not prev:
+                        self.head = next
+                    else:
+                        prev.sibling = next
+                    self.link(curr, next)
+                    curr = next
+            next = curr.sibling
+
+    def link(self, y, z):
+
+        y.parent = z
+        y.sibling = z.child
+        z.child = y
+        z.degree += 1
+
+    def insert(self, key):
+
+        new_queue = BinomialQueue()
+        new_queue.head = BinomialNode(key)
+        self.union(new_queue)
+
+    def find_min(self):
+
+        if not self.head:
+            return None
+
+        min_node = self.head
+        curr = self.head.sibling
+
+        while curr:
+            if curr.key < min_node.key:
+                min_node = curr
+            curr = curr.sibling
+
+        return min_node.key
+
+    def extract_min(self):
+
+        if not self.head:
+            return None
+
+        min_node = self.head
+        min_prev = None
+        prev = None
+        curr = self.head
+
+        while curr:
+            if curr.key < min_node.key:
+                min_node = curr
+                min_prev = prev
+            prev = curr
+            curr = curr.sibling
+
+        if min_prev:
+            min_prev.sibling = min_node.sibling
+        else:
+            self.head = min_node.sibling
+
+        child = min_node.child
+        temp_head = None
+        while child:
+            next_child = child.sibling
+            child.sibling = temp_head
+            child.parent = None
+            temp_head = child
+            child = next_child
+
+        new_queue = BinomialQueue()
+        new_queue.head = temp_head
+        self.union(new_queue)
+
+        return min_node.key
+
+    def print_queue(self):
+
+        def print_tree(node, level):
+            while node:
+                print(" " * level + f"Key: {node.key}, Degree: {node.degree}")
+                if node.child:
+                    print_tree(node.child, level + 4)
+                node = node.sibling
+
+        print("Binomial Queue:")
+        if not self.head:
+            print("Empty")
+        else:
+            print_tree(self.head, 0)
+
+
+if __name__ == "__main__":
+    queue = BinomialQueue()
+
+    elements = [10, 20, 30, 5, 15, 25]
+    for el in elements:
+        queue.insert(el)
+
+    queue.print_queue()
+
+    print(f"\nMin: {queue.find_min()}")
+
+    print(f"\nExtract_Min: {queue.extract_min()}")

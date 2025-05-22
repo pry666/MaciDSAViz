@@ -1,0 +1,9 @@
+Name:decode message
+
+Code:
+chars = []
+for numStr in inString.split():
+   codeNum = int(numStr)
+   chars.append(chr(codeNum))
+message = "".join(chars)
+print("\nThe decoded message is:", message)

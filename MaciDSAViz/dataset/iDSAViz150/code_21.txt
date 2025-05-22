@@ -1,0 +1,66 @@
+﻿Name:Coordinate transformation between 2D hand space and world space
+
+Code:
+import numpy as np
+
+def translation_matrix(tx, ty, tz):
+    return np.array([[1, 0, 0, tx],
+                     [0, 1, 0, ty],
+                     [0, 0, 1, tz],
+                     [0, 0, 0, 1]])
+
+def rotation_matrix_z(theta):
+    theta = np.deg2rad(theta)
+    return np.array([[np.cos(theta), -np.sin(theta), 0, 0],
+                     [np.sin(theta), np.cos(theta), 0, 0],
+                     [0, 0, 1, 0],
+                     [0, 0, 0, 1]])
+
+def scale_matrix(sx, sy, sz):
+    return np.array([[sx, 0, 0, 0],
+                     [0, sy, 0, 0],
+                     [0, 0, sz, 0],
+                     [0, 0, 0, 1]])
+
+def transform_to_world_space(hand_space_coords, translation, rotation, scale):
+    T = translation_matrix(*translation)
+    R = rotation_matrix_z(rotation)
+    S = scale_matrix(*scale)
+
+    transformation_matrix = np.dot(T, np.dot(R, S))
+
+    hand_space_coords_homogeneous = np.append(hand_space_coords, 1)
+
+    world_space_coords = np.dot(transformation_matrix, hand_space_coords_homogeneous)
+
+    return world_space_coords[:3]
+
+def transform_to_hand_space(world_space_coords, translation, rotation, scale):
+    T = translation_matrix(*translation)
+    R = rotation_matrix_z(rotation)
+    S = scale_matrix(*scale)
+
+    transformation_matrix = np.dot(T, np.dot(R, S))
+
+    inverse_transformation_matrix = np.linalg.inv(transformation_matrix)
+
+    world_space_coords_homogeneous = np.append(world_space_coords, 1)
+
+    hand_space_coords = np.dot(inverse_transformation_matrix, world_space_coords_homogeneous)
+
+    return hand_space_coords[:3]
+
+if __name__ == "__main__":
+    hand_space_point = np.array([2, 3, 4])
+
+    translation = (1, 2, 3)
+
+    rotation = 45
+
+    scale = (1, 2, 1)
+
+    world_space_point = transform_to_world_space(hand_space_point, translation, rotation, scale)
+    print("从手部空间到世界空间的变换:", world_space_point)
+
+    hand_space_point_back = transform_to_hand_space(world_space_point, translation, rotation, scale)
+    print("从世界空间到手部空间的逆变换:", hand_space_point_back)

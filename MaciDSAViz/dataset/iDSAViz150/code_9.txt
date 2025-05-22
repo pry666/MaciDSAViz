@@ -1,0 +1,81 @@
+Name:search of BPlusTree
+
+Code:
+class BPlusTreeNode:
+
+    def __init__(self, is_leaf=False):
+        self.is_leaf = is_leaf
+        self.keys = []
+        self.children = []
+
+
+class BPlusTree:
+
+    def __init__(self, t):
+        self.t = t
+        self.root = BPlusTreeNode(is_leaf=True)
+
+    def search(self, key):
+
+        node = self.root
+        while not node.is_leaf:
+            i = 0
+            while i < len(node.keys) and key >= node.keys[i]:
+                i += 1
+            node = node.children[i]
+        if key in node.keys:
+            return True
+        return False
+
+    def insert(self, key):
+
+        root = self.root
+        if len(root.keys) == (2 * self.t) - 1:
+            new_root = BPlusTreeNode()
+            new_root.children.append(self.root)
+            self.split_child(new_root, 0)
+            self.root = new_root
+        self._insert_non_full(self.root, key)
+
+    def _insert_non_full(self, node, key):
+
+        if node.is_leaf:
+            i = 0
+            while i < len(node.keys) and key > node.keys[i]:
+                i += 1
+            node.keys.insert(i, key)
+        else:
+            i = 0
+            while i < len(node.keys) and key > node.keys[i]:
+                i += 1
+            if len(node.children[i].keys) == (2 * self.t) - 1:
+                self.split_child(node, i)
+                if key > node.keys[i]:
+                    i += 1
+            self._insert_non_full(node.children[i], key)
+
+    def split_child(self, parent, index):
+
+        t = self.t
+        node = parent.children[index]
+        new_node = BPlusTreeNode(is_leaf=node.is_leaf)
+
+        parent.keys.insert(index, node.keys[t - 1])
+        parent.children.insert(index + 1, new_node)
+        new_node.keys = node.keys[t:]
+        node.keys = node.keys[:t - 1]
+
+        if not node.is_leaf:
+            new_node.children = node.children[t:]
+            node.children = node.children[:t]
+
+
+if __name__ == "__main__":
+    bpt = BPlusTree(t=3)
+
+    for key in [10, 20, 5, 6, 12, 30, 7, 17]:
+        bpt.insert(key)
+
+    print("\n搜索键值:")
+    for key in [6, 15]:
+        print(f"键 {key}: {'找到' if bpt.search(key) else '未找到'}")
