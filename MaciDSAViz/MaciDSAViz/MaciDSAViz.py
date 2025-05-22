@@ -163,8 +163,8 @@ def route_by_refine(feedback_result:str) -> Literal["Flow","API","Coding"]:
 graph_builder = StateGraph(MessagesState)
 
 llm = ChatOpenAI(    
-    api_key="EMPTY",
-    base_url=f"http://localhost:{port}/v1",
+    api_key="xxxx",
+    base_url="xxxx",
     model=MODEL_PATH
 )
 
