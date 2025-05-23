@@ -1,4 +1,4 @@
-from executor_s import check_single_file
+from Compile import check_single_file
 import asyncio
 from pathlib import Path
 from selenium import webdriver
