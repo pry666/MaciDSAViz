@@ -1,7 +1,7 @@
 # MaciDSAViz
 
 ## MaciDSAViz
-Our dataset and code is avaliable in this reposistory.
+Our dataset and code is available in this reposistory.
 
 ### MaciDSAViz/dataset
 Our dataset is in this folder with a csv showing the difficulty
