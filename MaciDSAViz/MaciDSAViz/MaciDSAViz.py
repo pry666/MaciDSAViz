@@ -208,7 +208,7 @@ def Code_ana_node(
     result["messages"][-1] = HumanMessage(
         content=result["messages"][-1].content, name="Flow"
     )
-    print("Flow:"+goto)
+
     return Command(
         update={
             "messages": result["messages"],
@@ -240,12 +240,13 @@ def API_sel_node(
 
     result = API_sel_agent.invoke({"messages": input_msgs})
     API_calls = result["messages"][-1].content
+    
     goto = get_next_node(result["messages"][-1], "Coding")
 
     result["messages"][-1] = HumanMessage(
         content=result["messages"][-1].content, name="API"
     )
-    print("API:"+goto)
+
     return Command(
         update={
             "messages": result["messages"],
@@ -324,7 +325,7 @@ def Wrong_ana_node(
     {error_messages}\n
 
     Memory List:\n
-    {related_case}
+    {related_case}\n
 
     You should analyze the error occurs in which step and return the choice.
     Following are three choices you can select:
@@ -343,6 +344,8 @@ def Wrong_ana_node(
     goto = route_by_refine(feedback_result)
 
     memory.append({
+        "DSA": py_code
+        "js code": final_result
         "error_message": error_messages,
         "Feedback_result": feedback_result
     })
