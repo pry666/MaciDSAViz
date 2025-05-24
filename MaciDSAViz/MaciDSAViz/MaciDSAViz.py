@@ -165,7 +165,9 @@ graph_builder = StateGraph(MessagesState)
 llm = ChatOpenAI(    
     api_key="xxxx",
     base_url="xxxx",
-    model=MODEL_PATH
+    model=MODEL_PATH,
+    temperature = 0.3,
+    top_p = 0.95
 )
 
 def make_system_prompt(suffix:str) -> str:
@@ -182,7 +184,7 @@ def get_next_node(last_message: BaseMessage, goto: str):
 Code_ana_agent = create_react_agent(
     llm,
     tools=[],
-    prompt="",
+    prompt=""
 )
 
 def Code_ana_node(
