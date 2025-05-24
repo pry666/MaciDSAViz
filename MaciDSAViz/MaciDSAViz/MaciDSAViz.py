@@ -411,7 +411,7 @@ for index, row in df1.iterrows():
     API_calls = ""
     examples = ""
     feedback_result = ""
-    print("error:" + error_messages)
+    max_iter_times = 5
     with open(f"./dataset/iDsaViz150/{csv1_filename}", "r", errors='ignore') as f:
         py_code = f.read()
 
@@ -427,7 +427,7 @@ for index, row in df1.iterrows():
                 )
             ],
         },
-        {"recursion_limit": 5},
+        {"recursion_limit": max_iter_times},
     )
 
     try: 
