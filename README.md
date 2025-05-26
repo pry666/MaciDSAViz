@@ -13,6 +13,21 @@
 **few-shot folder** is the code to calulate similarity and choose examples, \
 **document folder** includes DSV documentation and tutorials.
 
+#### Usage
+in line 165 in **MaciDSAViz.py**,you should set your own key and url,model_path.
+```
+llm = ChatOpenAI(    
+    api_key="xxxx",
+    base_url="xxxx",
+    model=MODEL_PATH
+)
+```
+then run by the following commands:
+```
+python MaciDSAViz.py
+```
+
+
 ### Case
 ![](./case_1.jpg)
 
