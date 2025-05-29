@@ -36,3 +36,7 @@ python MaciDSAViz.py
 ![](./case_2.jpg)
 
 ###  In the case of DFS, MaciDSAViz provides a clear and accurate visualization of the traversal process, effectively tracking the visited nodes. However, EHRAgent overlooks the representation of visited status, resulting in an incomplete or misleading depiction of the algorithm’s behavior
+
+![](./case_3.jpg)
+
+###  In the case of insert of BST, MaciDSAViz provides a clear and precise visualization of the insertion process, accurately illustrating the sequence of comparisons used to determine the correct position for each new node. In contrast, EHRAgent includes the overall insertion outcome but fails to depict the crucial comparison steps, resulting in an incomplete understanding of how the insertion position is determined within the tree structure.
